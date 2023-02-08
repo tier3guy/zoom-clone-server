@@ -7,7 +7,7 @@ route.get('/', (req, res) => {
         res.status(200).json({
             message: 'Welcome to the API',
             status: 'Running',
-            data: null
+            data: process.env.MAIL_ID
 
         });
         res.end();
