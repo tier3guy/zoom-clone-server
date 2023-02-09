@@ -28,17 +28,12 @@ route.post('/api/getOTP', (req, res) => {
         // Check if the email is already registered
         findUserByEmail(email).then(async (user) => {
             if(user){
-                user.otp = generateOTP();
-                const response = await user.save();
-                if(response) {
-                    sendMail(email, 'OTP', `Your OTP is ${user.otp}`);
-                    res.status(200).json({
-                        message: 'OTP sent to your email',
-                        status: 'Success',
-                        data: user.otp
-                    });
-                    res.end();
-                }
+                res.status(400).json({
+                    message: 'Email already registered',
+                    status: 'Already Registered',
+                    data: null
+                });
+                res.end();
             } else {
                 createUser(email, '')
                 .then((user) => {
