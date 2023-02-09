@@ -97,9 +97,58 @@ function sendMail(email, subject, text) {
     });
 }
 
+async function createAccount(fname, lname, email, password) {
+    try{
+        const user = await User.findOne({email});
+        if(user) {
+            user.fname = fname;
+            user.lname = lname;
+            user.password = password;
+            const res = await user.save();
+            if(res) {
+                return {
+                    message: 'Account created successfully',
+                    status: 'Success',
+                    data: null
+                }
+            }
+            else{
+                return {
+                    message: 'Something went wrong',
+                    status: 'Failed',
+                    data: null
+                }
+            }
+        } else {
+            const newUser = new User({
+                fname,
+                lname,
+                email,
+                password
+            });
+            const res = await newUser.save();
+            if(res) {
+                return {
+                    message: 'Account created successfully',
+                    status: 'Success',
+                    data: null
+                }
+            }
+        }
+    }
+    catch(err) {
+        return {
+            message: 'Something went wrong',
+            status: 'Failed',
+            data: null
+        }
+    }
+}
+
 module.exports = {
     createUser,
     generateOTP,
     findUserByEmail,
-    sendMail
+    sendMail,
+    createAccount
 }
