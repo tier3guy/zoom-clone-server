@@ -1,7 +1,7 @@
 const route = require('express').Router();
 
 // Import the functions from the main.js file
-const { createUser, findUserByEmail, generateOTP, sendMail, createAccount } = require('../db/functions/main');
+const { createUser, findUserByEmail, generateOTP, sendMail, createAccount, verifyUser } = require('../db/functions/main');
 
 route.get('/', (req, res) => {
         res.status(200).json({
@@ -85,6 +85,38 @@ route.post('/api/createAccount', (req, res) => {
         .catch((err) => {
             res.status(500).json({
                 message: 'Internal Server Error',
+                status: 'Failed',
+                data: null
+            });
+            res.end();
+        });
+    }
+});
+
+route.post('/api/verifyUser', (req, res) => {
+    const { email, password } = req.body;
+    if(!email || !password) {
+        res.status(400).json({
+            message: 'All fields are required',
+            status: 'Failed',
+            data: null
+        });
+        res.end();
+    }
+    else{
+        verifyUser(email, password)
+        .then((response) => {
+            res.status(200).json({
+                message: response.message,
+                status: response.status,
+                data: null
+            });
+            res.end();
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: 'Internal Server Error',
+                error: err,
                 status: 'Failed',
                 data: null
             });

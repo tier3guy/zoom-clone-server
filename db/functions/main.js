@@ -145,10 +145,47 @@ async function createAccount(fname, lname, email, password) {
     }
 }
 
+async function verifyUser(email, password){
+    try{
+        const res = await User.findOne({email}); 
+        if(res) {
+            if(res.password === password) {
+                return {
+                    message: 'User verified',
+                    status: 'Success',
+                    data: res
+                }
+            }
+            else{
+                return {
+                    message: 'Password is incorrect',
+                    status: 'Failed',
+                    data: null
+                }
+            }
+        }
+        else{
+            return {
+                message: 'User not found',
+                status: 'Failed',
+                data: null
+            }
+        }
+    }
+    catch(err) {
+        return {
+            message: 'Something went wrong',
+            status: 'Failed',
+            data: null
+        };
+    }
+}
+
 module.exports = {
     createUser,
     generateOTP,
     findUserByEmail,
     sendMail,
-    createAccount
+    createAccount,
+    verifyUser
 }
